@@ -125,3 +125,21 @@ function copyNamesToClipboard() {
       console.error("Erro ao copiar para a área de transferência:", error);
     });
 }
+
+function calculateEquation() {
+  const manaAverage =
+    parseFloat(document.getElementById("manaAverage").value) || 0;
+  const cheapSpells =
+    parseFloat(document.getElementById("cheapSpells").value) || 0;
+  const result = 31.42 + 3.13 * manaAverage - 0.28 * cheapSpells;
+  document.getElementById(
+    "equationResult"
+  ).textContent = `Número de Terrenos: ${result.toFixed(2)}`;
+}
+
+var tooltipTriggerList = [].slice.call(
+  document.querySelectorAll('[data-bs-toggle="tooltip"]')
+);
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl);
+});

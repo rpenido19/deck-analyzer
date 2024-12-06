@@ -86,6 +86,52 @@
       <div class="d-flex mt-3">
         <small id="table-footer"></small>
       </div>
+      <hr />
+      <div class="row mb-4">
+        <h5>Calcular Número de Terrenos</h5>
+        <div class="col-md-3 mb-3">
+          <label for="manaAverage" class="form-label"
+            >Média do valor de mana</label
+          >
+          <input
+            type="number"
+            class="form-control border-secondary"
+            id="manaAverage"
+            placeholder="Média do valor de mana"
+          />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="cheapSpells" class="form-label"
+            >Número de mágicas baratas</label
+          >
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-control border-secondary"
+              id="cheapSpells"
+              placeholder="Número de mágicas baratas"
+            />
+            <span
+              class="input-group-text"
+              id="basic-addon1"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Mágicas baratas de compra de cartas ou ramp com custo de mana total 3 ou menos."
+              >?</span
+            >
+          </div>
+        </div>
+        <div class="col-md-2 d-flex align-items-end mb-3">
+          <button class="btn btn-success w-100" onclick="calculateEquation()">
+            Calcular
+          </button>
+        </div>
+        <div class="col-md-4 d-flex align-items-end pb-2 mb-3">
+          <strong id="equationResult" class="ms-3">
+            Número de Terrenos: -
+          </strong>
+        </div>
+      </div>
     </div>
 
     <button
