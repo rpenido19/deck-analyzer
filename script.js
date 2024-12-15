@@ -9,6 +9,13 @@ function loadFiles() {
   const cardData = {};
 
   function processFileData(data) {
+    if (
+      !data ||
+      !data.pageProps?.data?.container?.json_dict?.cardlists?.length
+    ) {
+      return false;
+    }
+
     data.pageProps.data.container.json_dict.cardlists.forEach((i) => {
       i.cardviews.forEach((card) => {
         const cardName = card.sanitized;
@@ -24,33 +31,54 @@ function loadFiles() {
         }
       });
     });
+
+    return true;
   }
 
-  let filesLoaded = 0;
+  let filesProcessed = 0;
+  let validFiles = 0;
+
   fileNames.forEach((file) => {
     fetch(file)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Erro ao carregar o arquivo JSON.");
+          throw new Error(`Erro ao carregar o arquivo ${file}`);
         }
         return response.json();
       })
       .then((data) => {
-        processFileData(data);
-        filesLoaded += 1;
+        const processed = processFileData(data);
+        if (processed) {
+          validFiles += 1;
+        }
+        filesProcessed += 1;
 
-        if (filesLoaded === fileNames.length) {
-          allCards = Object.values(cardData)
-            .filter((card) => card.count === fileNames.length)
-            .map((card) => card.details);
-
-          displayCards(allCards);
+        if (filesProcessed === fileNames.length) {
+          finalizeProcessing(validFiles);
         }
       })
       .catch((error) => {
         console.error("Erro:", error);
+        filesProcessed += 1;
+
+        if (filesProcessed === fileNames.length) {
+          finalizeProcessing(validFiles);
+        }
       });
   });
+
+  function finalizeProcessing(validFiles) {
+    if (validFiles === 0) {
+      console.warn("Nenhum arquivo válido foi encontrado.");
+      return;
+    }
+
+    allCards = Object.values(cardData)
+      .filter((card) => card.count === validFiles)
+      .map((card) => card.details);
+
+    displayCards(allCards);
+  }
 }
 
 function displayCards(cards) {
