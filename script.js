@@ -95,9 +95,12 @@ function displayCards(cards) {
 
     row.innerHTML = `
         <td>${card.name}</td>
-        <td>${card.inclusion}</td>
         <td>${card.num_decks}</td>
+        <td>${parseFloat(card.inclusion / card.potential_decks).toFixed(
+          2
+        )}%</td>
         <td>${card.synergy}%</td>
+        <td>${card.potential_decks}</td>
       `;
 
     tableBody.appendChild(row);
@@ -118,12 +121,17 @@ function applyFilters() {
   const synergyFilter = parseFloat(
     document.getElementById("filterSynergy").value
   );
+  const potentialDecksFilter = parseInt(
+    document.getElementById("filterPotentialDecks").value
+  );
 
   const filteredCards = allCards.filter((card) => {
     return (
       (isNaN(inclusionFilter) || card.inclusion >= inclusionFilter) &&
       (isNaN(numDecksFilter) || card.num_decks >= numDecksFilter) &&
-      (isNaN(synergyFilter) || card.synergy >= synergyFilter)
+      (isNaN(synergyFilter) || card.synergy >= synergyFilter) &&
+      (isNaN(potentialDecksFilter) ||
+        card.potential_decks >= potentialDecksFilter)
     );
   });
 
@@ -147,11 +155,46 @@ function copyNamesToClipboard() {
   navigator.clipboard
     .writeText(namesText)
     .then(() => {
-      alert("Nomes das cartas copiados para a área de transferência!");
+      showToast("Nomes das cartas copiados para a área de transferência!");
     })
     .catch((error) => {
       console.error("Erro ao copiar para a área de transferência:", error);
     });
+}
+
+function showToast(message) {
+  // Cria o elemento de toast
+  const toast = document.createElement("div");
+  toast.className =
+    "toast align-items-center text-bg-success border-0 position-fixed bottom-0 start-0 m-3";
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
+
+  // Define o conteúdo do toast
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">
+        ${message}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  `;
+
+  // Aplica o z-index para sobreposição
+  toast.style.zIndex = "1055";
+
+  // Insere o toast no DOM
+  document.body.appendChild(toast);
+
+  // Inicializa o toast usando Bootstrap
+  const bootstrapToast = new bootstrap.Toast(toast);
+  bootstrapToast.show();
+
+  // Remove o toast após ele ser ocultado
+  toast.addEventListener("hidden.bs.toast", () => {
+    toast.remove();
+  });
 }
 
 function calculateEquation() {
