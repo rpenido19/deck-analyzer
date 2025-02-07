@@ -22,12 +22,16 @@ function loadFiles() {
 
         if (!cardData[cardName]) {
           cardData[cardName] = { count: 0, details: card };
+          cardData[cardName].details.header = i.header;
+          cardData[cardName].details.tag = i.tag;
         }
 
         cardData[cardName].count += 1;
 
         if (card.inclusion > cardData[cardName].details.inclusion) {
           cardData[cardName].details = card;
+          cardData[cardName].details.header = i.header;
+          cardData[cardName].details.tag = i.tag;
         }
       });
     });
@@ -95,6 +99,7 @@ function displayCards(cards) {
 
     row.innerHTML = `
         <td>${card.name}</td>
+        <td>${card.header}</td>
         <td>${card.num_decks}</td>
         <td>${parseFloat(card.inclusion / card.potential_decks).toFixed(
           2
@@ -107,8 +112,7 @@ function displayCards(cards) {
   });
 
   const tableFooter = document.getElementById("table-footer");
-  tableFooter.innerHTML =
-    "Total de registros na tabela: " + limitedCards.length;
+  tableFooter.innerHTML = "Total records in the table: " + limitedCards.length;
 }
 
 function applyFilters() {
@@ -124,14 +128,17 @@ function applyFilters() {
   const potentialDecksFilter = parseInt(
     document.getElementById("filterPotentialDecks").value
   );
+  const tagFilter = document.getElementById("filterTag").value;
 
   const filteredCards = allCards.filter((card) => {
     return (
-      (isNaN(inclusionFilter) || card.inclusion >= inclusionFilter) &&
+      (isNaN(inclusionFilter) ||
+        card.inclusion / card.potential_decks >= inclusionFilter) &&
       (isNaN(numDecksFilter) || card.num_decks >= numDecksFilter) &&
       (isNaN(synergyFilter) || card.synergy >= synergyFilter) &&
       (isNaN(potentialDecksFilter) ||
-        card.potential_decks >= potentialDecksFilter)
+        card.potential_decks >= potentialDecksFilter) &&
+      (card.header.includes(tagFilter) || card.tag.includes(tagFilter))
     );
   });
 

@@ -26,7 +26,7 @@
               aria-expanded="true"
               aria-controls="panelsStayOpen-collapseOne"
             >
-              Filtros para Análise de Cartas
+              Filters for Chart Analysis
             </button>
           </h2>
           <div
@@ -42,6 +42,15 @@
                   class="form-control border-secondary"
                   id="filterNumDecks"
                   placeholder="Min. Num Decks"
+                />
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="filterTag" class="form-label">Tag</label>
+                <input
+                  type="text"
+                  class="form-control border-secondary"
+                  id="filterTag"
+                  placeholder="Tag"
                 />
               </div>
               <div class="col-md-2 mb-3">
@@ -81,17 +90,18 @@
                   type="number"
                   class="form-control border-secondary"
                   id="filterLimit"
-                  placeholder="Máx. de Registros"
+                  placeholder="Max. Records"
                 />
               </div>
-              <div class="col-md-1 mb-3 d-flex align-items-end ms-auto">
-                <button class="btn btn-primary w-100" onclick="applyFilters()">
+              <div class="col mb-3 d-flex align-items-end">
+                <button class="btn btn-primary" onclick="applyFilters()">
+                  Filter
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="16"
                     fill="currentColor"
-                    class="bi bi-funnel"
+                    class="bi bi-funnel ms-1"
                     viewBox="0 0 16 16"
                   >
                     <path
@@ -105,7 +115,8 @@
                 <table class="table table-striped table-hover">
                   <thead>
                     <tr>
-                      <th>Nome</th>
+                      <th>Name</th>
+                      <th>Tag</th>
                       <th>Num Decks</th>
                       <th>Inclusion</th>
                       <th>Synergy (%)</th>
@@ -131,7 +142,7 @@
               aria-expanded="false"
               aria-controls="panelsStayOpen-collapseTwo"
             >
-              Calcular Número de Terrenos
+              Calculate Number of Lands
             </button>
           </h2>
           <div
@@ -142,32 +153,32 @@
             <div class="accordion-body row">
               <div class="col-md-3 mb-3">
                 <label for="manaAverage" class="form-label"
-                  >Média do valor de mana</label
+                  >Average mana value</label
                 >
                 <input
                   type="number"
                   class="form-control border-secondary"
                   id="manaAverage"
-                  placeholder="Média do valor de mana"
+                  placeholder="Average mana value"
                 />
               </div>
               <div class="col-md-3 mb-3">
                 <label for="cheapSpells" class="form-label"
-                  >Número de mágicas baratas</label
+                  >Cheap magic number</label
                 >
                 <div class="input-group">
                   <input
                     type="number"
                     class="form-control border-secondary"
                     id="cheapSpells"
-                    placeholder="Número de mágicas baratas"
+                    placeholder="Cheap magic number"
                   />
                   <span
                     class="input-group-text"
                     id="basic-addon1"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
-                    title="Mágicas baratas de compra de cartas ou ramp com custo de mana total 3 ou menos."
+                    title="Cheap card draw or ramp spells with total mana cost 3 or less."
                     >?</span
                   >
                 </div>
@@ -177,12 +188,12 @@
                   class="btn btn-success w-100"
                   onclick="calculateEquation()"
                 >
-                  Calcular
+                  Calculate
                 </button>
               </div>
               <div class="col-md-4 d-flex align-items-end pb-2 mb-3">
                 <strong id="equationResult" class="ms-3">
-                  Número de Terrenos: -
+                  Number of Lands: -
                 </strong>
               </div>
             </div>
