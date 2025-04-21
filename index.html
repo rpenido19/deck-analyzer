@@ -46,12 +46,23 @@
               </div>
               <div class="col-md-2 mb-3">
                 <label for="filterTag" class="form-label">Tag</label>
-                <input
-                  type="text"
+                <select
                   class="form-control border-secondary"
                   id="filterTag"
-                  placeholder="Tag"
-                />
+                  name="Tag"
+                >
+                  <option value="" selected>Selecione</option>
+                  <option value="High Synergy Cards">High Synergy Cards</option>
+                  <option value="Top Cards">Top Cards</option>
+                  <option value="Creatures">Creatures</option>
+                  <option value="Instants">Instants</option>
+                  <option value="Sorceries">Sorceries</option>
+                  <option value="Artifacts">Artifacts</option>
+                  <option value="Enchantments">Enchantments</option>
+                  <option value="Planeswalkers">Planeswalkers</option>
+                  <option value="Lands">Lands</option>
+                  <option value="NOT Lands">NOT Lands</option>
+                </select>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="filterInclusion" class="form-label"

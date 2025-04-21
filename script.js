@@ -131,14 +131,34 @@ function applyFilters() {
   const tagFilter = document.getElementById("filterTag").value;
 
   const filteredCards = allCards.filter((card) => {
+    const passesInclusion =
+      isNaN(inclusionFilter) ||
+      card.inclusion / card.potential_decks >= inclusionFilter;
+
+    const passesNumDecks =
+      isNaN(numDecksFilter) || card.num_decks >= numDecksFilter;
+
+    const passesSynergy = isNaN(synergyFilter) || card.synergy >= synergyFilter;
+
+    const passesPotentialDecks =
+      isNaN(potentialDecksFilter) ||
+      card.potential_decks >= potentialDecksFilter;
+
+    let passesTag = true;
+
+    if (tagFilter === "NOT Lands") {
+      passesTag = !card.header.includes("Lands") && !card.tag.includes("Lands");
+    } else if (tagFilter !== "") {
+      passesTag =
+        card.header.includes(tagFilter) || card.tag.includes(tagFilter);
+    }
+
     return (
-      (isNaN(inclusionFilter) ||
-        card.inclusion / card.potential_decks >= inclusionFilter) &&
-      (isNaN(numDecksFilter) || card.num_decks >= numDecksFilter) &&
-      (isNaN(synergyFilter) || card.synergy >= synergyFilter) &&
-      (isNaN(potentialDecksFilter) ||
-        card.potential_decks >= potentialDecksFilter) &&
-      (card.header.includes(tagFilter) || card.tag.includes(tagFilter))
+      passesInclusion &&
+      passesNumDecks &&
+      passesSynergy &&
+      passesPotentialDecks &&
+      passesTag
     );
   });
 
