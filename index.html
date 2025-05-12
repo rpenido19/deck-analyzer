@@ -54,6 +54,8 @@
                   <option value="" selected>Selecione</option>
                   <option value="High Synergy Cards">High Synergy Cards</option>
                   <option value="Top Cards">Top Cards</option>
+                  <option value="New Cards">New Cards</option>
+                  <option value="Game Changers">Game Changers</option>
                   <option value="Creatures">Creatures</option>
                   <option value="Instants">Instants</option>
                   <option value="Sorceries">Sorceries</option>
@@ -103,6 +105,15 @@
                   id="filterLimit"
                   placeholder="Max. Records"
                 />
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="filterSortBy" class="form-label">Sort By</label>
+                <select class="form-control border-secondary" id="filterSortBy">
+                  <option value="Num Decks" selected>Num Decks</option>
+                  <option value="Inclusion">Inclusion</option>
+                  <option value="Synergy (%)">Synergy (%)</option>
+                  <option value="Potential Decks">Potential Decks</option>
+                </select>
               </div>
               <div class="col mb-3 d-flex align-items-end">
                 <button class="btn btn-primary" onclick="applyFilters()">

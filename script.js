@@ -89,7 +89,23 @@ function displayCards(cards) {
   const tableBody = document.getElementById("cardTableBody");
   tableBody.innerHTML = "";
 
-  cards.sort((a, b) => b.num_decks - a.num_decks);
+  switch (document.getElementById("filterSortBy").value) {
+    case "Num Decks":
+      cards.sort((a, b) => b.num_decks - a.num_decks);
+      break;
+    case "Inclusion":
+      cards.sort(
+        (a, b) =>
+          b.inclusion / b.potential_decks - a.inclusion / a.potential_decks
+      );
+      break;
+    case "Synergy (%)":
+      cards.sort((a, b) => b.synergy - a.synergy);
+      break;
+    case "Potential Decks":
+      cards.sort((a, b) => b.potential_decks - a.potential_decks);
+      break;
+  }
 
   const limit = parseInt(document.getElementById("filterLimit").value);
   const limitedCards = isNaN(limit) ? cards : cards.slice(0, limit);
