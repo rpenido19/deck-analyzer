@@ -21,17 +21,20 @@ function loadFiles() {
         const cardName = card.sanitized;
 
         if (!cardData[cardName]) {
-          cardData[cardName] = { count: 0, details: card };
-          cardData[cardName].details.header = i.header;
-          cardData[cardName].details.tag = i.tag;
+          cardData[cardName] = {
+            count: 0,
+            details: { ...card },
+            header: i.header,
+            tag: i.tag,
+          };
         }
 
         cardData[cardName].count += 1;
 
         if (card.inclusion > cardData[cardName].details.inclusion) {
-          cardData[cardName].details = card;
-          cardData[cardName].details.header = i.header;
-          cardData[cardName].details.tag = i.tag;
+          cardData[cardName].details = { ...card };
+          cardData[cardName].header = i.header;
+          cardData[cardName].tag = i.tag;
         }
       });
     });
@@ -45,16 +48,12 @@ function loadFiles() {
   fileNames.forEach((file) => {
     fetch(file)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Erro ao carregar o arquivo ${file}`);
-        }
+        if (!response.ok) throw new Error(`Erro ao carregar o arquivo ${file}`);
         return response.json();
       })
       .then((data) => {
         const processed = processFileData(data);
-        if (processed) {
-          validFiles += 1;
-        }
+        if (processed) validFiles += 1;
         filesProcessed += 1;
 
         if (filesProcessed === fileNames.length) {
@@ -79,7 +78,11 @@ function loadFiles() {
 
     allCards = Object.values(cardData)
       .filter((card) => card.count === validFiles)
-      .map((card) => card.details);
+      .map((card) => ({
+        ...card.details,
+        header: card.header,
+        tag: card.tag,
+      }));
 
     displayCards(allCards);
   }
@@ -112,23 +115,21 @@ function displayCards(cards) {
 
   limitedCards.forEach((card) => {
     const row = document.createElement("tr");
-
     row.innerHTML = `
-        <td>${card.name}</td>
-        <td>${card.header}</td>
-        <td>${card.num_decks}</td>
-        <td>${parseFloat(card.inclusion / card.potential_decks).toFixed(
-          2
-        )}%</td>
-        <td>${card.synergy}%</td>
-        <td>${card.potential_decks}</td>
-      `;
-
+      <td>${card.name}</td>
+      <td>${card.header}</td>
+      <td>${card.num_decks}</td>
+      <td>${parseFloat((card.inclusion / card.potential_decks) * 100).toFixed(
+        2
+      )}%</td>
+      <td>${card.synergy}%</td>
+      <td>${card.potential_decks}</td>
+    `;
     tableBody.appendChild(row);
   });
 
-  const tableFooter = document.getElementById("table-footer");
-  tableFooter.innerHTML = "Total records in the table: " + limitedCards.length;
+  document.getElementById("table-footer").innerHTML =
+    "Total records in the table: " + limitedCards.length;
 }
 
 function applyFilters() {
@@ -150,18 +151,14 @@ function applyFilters() {
     const passesInclusion =
       isNaN(inclusionFilter) ||
       card.inclusion / card.potential_decks >= inclusionFilter;
-
     const passesNumDecks =
       isNaN(numDecksFilter) || card.num_decks >= numDecksFilter;
-
     const passesSynergy = isNaN(synergyFilter) || card.synergy >= synergyFilter;
-
     const passesPotentialDecks =
       isNaN(potentialDecksFilter) ||
       card.potential_decks >= potentialDecksFilter;
 
     let passesTag = true;
-
     if (tagFilter === "NOT Lands") {
       passesTag = !card.header.includes("Lands") && !card.tag.includes("Lands");
     } else if (tagFilter !== "") {
@@ -188,25 +185,20 @@ function copyNamesToClipboard() {
 
   for (let row of rows) {
     const nameCell = row.cells[0];
-    if (nameCell) {
-      cardNames.push("1 " + nameCell.textContent.trim());
-    }
+    if (nameCell) cardNames.push("1 " + nameCell.textContent.trim());
   }
 
-  const namesText = cardNames.join("\n");
-
   navigator.clipboard
-    .writeText(namesText)
-    .then(() => {
-      showToast("Nomes das cartas copiados para a área de transferência!");
-    })
+    .writeText(cardNames.join("\n"))
+    .then(() =>
+      showToast("Nomes das cartas copiados para a área de transferência!")
+    )
     .catch((error) => {
       console.error("Erro ao copiar para a área de transferência:", error);
     });
 }
 
 function showToast(message) {
-  // Cria o elemento de toast
   const toast = document.createElement("div");
   toast.className =
     "toast align-items-center text-bg-success border-0 position-fixed bottom-0 start-0 m-3";
@@ -214,30 +206,18 @@ function showToast(message) {
   toast.setAttribute("aria-live", "assertive");
   toast.setAttribute("aria-atomic", "true");
 
-  // Define o conteúdo do toast
   toast.innerHTML = `
     <div class="d-flex">
-      <div class="toast-body">
-        ${message}
-      </div>
+      <div class="toast-body">${message}</div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
   `;
 
-  // Aplica o z-index para sobreposição
   toast.style.zIndex = "1055";
-
-  // Insere o toast no DOM
   document.body.appendChild(toast);
+  new bootstrap.Toast(toast).show();
 
-  // Inicializa o toast usando Bootstrap
-  const bootstrapToast = new bootstrap.Toast(toast);
-  bootstrapToast.show();
-
-  // Remove o toast após ele ser ocultado
-  toast.addEventListener("hidden.bs.toast", () => {
-    toast.remove();
-  });
+  toast.addEventListener("hidden.bs.toast", () => toast.remove());
 }
 
 function calculateEquation() {
