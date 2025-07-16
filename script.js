@@ -113,9 +113,10 @@ function displayCards(cards) {
   const limit = parseInt(document.getElementById("filterLimit").value);
   const limitedCards = isNaN(limit) ? cards : cards.slice(0, limit);
 
-  limitedCards.forEach((card) => {
+  limitedCards.forEach((card, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
+      <td>${index + 1}</td>
       <td>${card.name}</td>
       <td>${card.header}</td>
       <td>${card.num_decks}</td>
@@ -184,7 +185,7 @@ function copyNamesToClipboard() {
   const cardNames = [];
 
   for (let row of rows) {
-    const nameCell = row.cells[0];
+    const nameCell = row.cells[1];
     if (nameCell) cardNames.push("1 " + nameCell.textContent.trim());
   }
 
