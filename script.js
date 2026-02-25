@@ -99,7 +99,7 @@ function displayCards(cards) {
     case "Inclusion":
       cards.sort(
         (a, b) =>
-          b.inclusion / b.potential_decks - a.inclusion / a.potential_decks
+          b.inclusion / b.potential_decks - a.inclusion / a.potential_decks,
       );
       break;
     case "Synergy (%)":
@@ -121,7 +121,7 @@ function displayCards(cards) {
       <td>${card.header}</td>
       <td>${card.num_decks}</td>
       <td>${parseFloat((card.inclusion / card.potential_decks) * 100).toFixed(
-        2
+        2,
       )}%</td>
       <td>${card.synergy}%</td>
       <td>${card.potential_decks}</td>
@@ -135,16 +135,16 @@ function displayCards(cards) {
 
 function applyFilters() {
   const inclusionFilter = parseFloat(
-    document.getElementById("filterInclusion").value
+    document.getElementById("filterInclusion").value,
   );
   const numDecksFilter = parseInt(
-    document.getElementById("filterNumDecks").value
+    document.getElementById("filterNumDecks").value,
   );
   const synergyFilter = parseFloat(
-    document.getElementById("filterSynergy").value
+    document.getElementById("filterSynergy").value,
   );
   const potentialDecksFilter = parseInt(
-    document.getElementById("filterPotentialDecks").value
+    document.getElementById("filterPotentialDecks").value,
   );
   const tagFilter = document.getElementById("filterTag").value;
 
@@ -192,7 +192,7 @@ function copyNamesToClipboard() {
   navigator.clipboard
     .writeText(cardNames.join("\n"))
     .then(() =>
-      showToast("Nomes das cartas copiados para a área de transferência!")
+      showToast("Nomes das cartas copiados para a área de transferência!"),
     )
     .catch((error) => {
       console.error("Erro ao copiar para a área de transferência:", error);
@@ -227,14 +227,63 @@ function calculateEquation() {
   const cheapSpells =
     parseFloat(document.getElementById("cheapSpells").value) || 0;
   const result = 31.42 + 3.13 * manaAverage - 0.28 * cheapSpells;
-  document.getElementById(
-    "equationResult"
-  ).textContent = `Número de Terrenos: ${result.toFixed(2)}`;
+  document.getElementById("equationResult").textContent =
+    `Número de Terrenos: ${result.toFixed(2)}`;
 }
 
-var tooltipTriggerList = [].slice.call(
-  document.querySelectorAll('[data-bs-toggle="tooltip"]')
+let tooltipTriggerList = [].slice.call(
+  document.querySelectorAll('[data-bs-toggle="tooltip"]'),
 );
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+
+let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl);
 });
+
+function calculateProportion() {
+  let data = [
+    {
+      value: parseFloat($("#calculate-proportion-white").val()) || 0,
+      label: "Plains",
+    },
+    {
+      value: parseFloat($("#calculate-proportion-blue").val()) || 0,
+      label: "Island",
+    },
+    {
+      value: parseFloat($("#calculate-proportion-black").val()) || 0,
+      label: "Swamp",
+    },
+    {
+      value: parseFloat($("#calculate-proportion-red").val()) || 0,
+      label: "Mountain",
+    },
+    {
+      value: parseFloat($("#calculate-proportion-green").val()) || 0,
+      label: "Forest",
+    },
+  ];
+  const totalLands =
+    parseFloat($("#calculate-proportion-num-lands").val()).toFixed(0) || 0;
+  let sum = data.reduce((acc, current) => acc + current.value, 0);
+  let activeColors = data.filter((c) => c.value > 0).length;
+  if (sum === 0 || totalLands === 0 || activeColors === 0) {
+    $("#calculate-proportion-copy-to-clipboard").val(
+      "Preencha os valores corretamente.",
+    );
+    return;
+  }
+  let numBasic = Math.round(totalLands / activeColors);
+  let result = "";
+  data.forEach((element) => {
+    if (element.value > 0) {
+      let amount = Math.round((element.value * numBasic) / sum);
+      if (amount > 0) {
+        result += `${amount} ${element.label}\n`;
+      }
+    }
+  });
+  result += `\n// ${totalLands} Lands\n`;
+  result += `// ${numBasic} Basic lands\n`;
+  result += `// ${totalLands - numBasic + activeColors} Different lands`;
+  $("#calculate-proportion-copy-to-clipboard").val(result.trim());
+}
