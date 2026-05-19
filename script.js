@@ -274,16 +274,19 @@ function calculateProportion() {
   }
   let numBasic = Math.round(totalLands / activeColors);
   let result = "";
+  let aux = 0;
   data.forEach((element) => {
     if (element.value > 0) {
       let amount = Math.round((element.value * numBasic) / sum);
       if (amount > 0) {
         result += `${amount} ${element.label}\n`;
+        aux += amount;
       }
     }
   });
-  result += `\n// ${totalLands} Lands\n`;
-  result += `// ${numBasic} Basic lands\n`;
-  result += `// ${totalLands - numBasic + activeColors} Different lands`;
+  result += `\n// ${99 - totalLands} Nonlands\n`;
+  result += `// ${totalLands} Lands\n`;
+  result += `// ${aux} Basic lands\n`;
+  result += `// ${totalLands - aux + activeColors} Different lands`;
   $("#calculate-proportion-copy-to-clipboard").val(result.trim());
 }
